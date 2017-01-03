@@ -1,5 +1,5 @@
 # selfstudy-IBP
-Self-study notes for Indian Buffet Process, from reading through "The Indian Buffer Process: An Introduction and Review", Griffiths, Ghahramani, 2011
+Self-study notes for Indian Buffet Process, from reading through "The Indian Buffet Process: An Introduction and Review", Griffiths, Ghahramani, 2011
 
 There are three sections currently:
 
