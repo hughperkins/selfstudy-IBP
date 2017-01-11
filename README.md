@@ -10,5 +10,5 @@ There are three sections currently:
 
 ## news
 
-- just discovered that when the notebooks are displayed in the github viewer, any consecutive equations are displayed showing only the last equation
+- 2015 jan 11: just discovered that when the notebooks are displayed in the github viewer, any consecutive equations are displayed showing only the last equation
   - a temporary workaround for this is to put `&nbsp;` between the equations, which is a bit ugly, but better than skipping equations
