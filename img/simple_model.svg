@@ -114,7 +114,7 @@
      id="layer1"
      transform="translate(0,-308.26772)">
     <ellipse
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path4136"
        cx="287.85715"
        cy="659.50507"
@@ -131,7 +131,7 @@
          x="281.42856"
          y="660.93359">Z</tspan></text>
     <ellipse
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#ffffff;fill-opacity:1;stroke:#ff0000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path4136-3"
        cx="634.28571"
        cy="662.36218"
@@ -153,7 +153,7 @@
        id="path4161"
        inkscape:connector-curvature="0" />
     <ellipse
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path4474"
        cx="91.428574"
        cy="663.93365"
@@ -175,7 +175,7 @@
        id="path4480"
        inkscape:connector-curvature="0" />
     <ellipse
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path4474-6"
        cx="561.42859"
        cy="815.2193"
@@ -197,7 +197,7 @@
        id="path4541"
        inkscape:connector-curvature="0" />
     <ellipse
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#cccccc;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path4474-6-7"
        cx="715.71429"
        cy="822.64795"
