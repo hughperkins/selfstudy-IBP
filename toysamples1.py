@@ -290,10 +290,7 @@ if __name__ == '__main__':
 
         if (it + 1) % print_every == 0:
             print('it %s' % (it + 1))
-    #         print(columns_to_array(Z_columns))
             it_str = str(it + 1)
             while len(it_str) < 3:
                 it_str = '0' + it_str
             print_A(join(out_dir, 'A_draws_it%s.png' % it_str), Z_columns, sigma_X, sigma_A)
-    #         print('expected_A\n', expected_A)
-    #     print('Z_columns', Z_columns)
