@@ -82,18 +82,12 @@ def print_images(filepath, image_infos, image_min=-1, image_max=2):
     - data (np.array)
     """
     plt.figure(1)
-    # rows = 1
-    # cols = 1
-    # num_figures = 1
     if not isinstance(image_infos, list):
         image_infos = [image_infos]
     if not isinstance(image_infos[0], list):
         image_infos = [image_infos]
-
     rows = len(image_infos)
     cols = len(image_infos[0])
-    # num_figures = rows * cols
-    # num_figures = len(images)
 
     for row, row_infos in enumerate(image_infos):
         for col, image_info in enumerate(row_infos):
@@ -101,10 +95,6 @@ def print_images(filepath, image_infos, image_min=-1, image_max=2):
                 continue
             image = image_info['data']
             image_size = image.shape[0]
-            # image_min = np.min(image)
-            # image_max = np.max(image)
-            # image_min = -1
-            # image_max = 2
             image_range = image_max - image_min
             image = np.maximum(image_min, image)
             image = np.minimum(image_max, image)
@@ -118,14 +108,12 @@ def print_images(filepath, image_infos, image_min=-1, image_max=2):
             plt.axis('off')
             if image_info.get('title', None) is not None:
                 plt.title(image_info['title'])
-    # plt.show()
     plt.savefig(filepath)
 
 
 def draw_samples(N, class_pics):
     samples = []
     ground_truth_Z = np.zeros((N, num_classes), dtype=np.int8)
-    # samples_to_print = set(np.random.choice(N, (num_samples_to_print,), replace=False))
     images_to_print = []
     num_cols = int(math.sqrt(N))
     images_row = []
@@ -133,24 +121,13 @@ def draw_samples(N, class_pics):
         image = np.zeros((image_size, image_size), dtype=np.float32)
         features = np.random.choice(2, size=(num_classes,))
         ground_truth_Z[n] = features
-#         print(features)
         for k, v in enumerate(features):
             if v == 1:
                 image += class_pics[k]
-        # image_orig = np.copy(image)
-#         print_image(image)
 
         noise = np.random.randn(image_size, image_size).astype(np.float32) * sigma_X
-#         print_image(noise)
 
         image += noise
-        # if n in samples_to_print:
-        # print(n)
-        # images_row.append([
-        #     {'title': 'orig', 'data': image_orig},
-        #     {'title': 'hoise', 'data': noise},
-        #     {'title': 'noised image', 'data': image},
-        # ])
         images_row.append({'data': image})
         if(len(images_row)) == num_cols:
             images_to_print.append(images_row)
@@ -201,30 +178,18 @@ def calc_A(img_path, Z_columns, sigma_X, sigma_A):
     Z = columns_to_array(Z_columns)
     if Z is None:
         return None
+
     I = sigma_X * sigma_X / (sigma_A * sigma_A) * np.identity(Z.shape[1])
     ZTZI = Z.T.dot(Z) + I
     ZTX = Z.T.dot(X)
 
     E_A = np.linalg.solve(ZTZI, ZTX)
 
-#     print('ZTZI', ZTZI)
-    # ZTZIInv = np.linalg.inv(ZTZI)
-#     print('ZTZIInv', ZTZIInv)
-    # E_A = ZTZIInv.dot(Z.T).dot(X)
-#     print('E_A\n', E_A)
-#     print('E_A.shape', E_A.shape)
-    # image_titles = []
     image_infos = []
     for k in range(E_A.shape[0]):
         image_flat = E_A[k]
         image = image_flat.reshape(image_size, image_size)
-        # image_titles.append(None)
-        image_infos.append({
-            'data': image
-        })
-        # images.append(image)
-#         print_images(['A k=%s' % k], [image])
-#     asdf
+        image_infos.append({'data': image})
     print_images(img_path, image_infos)
     return E_A
 
