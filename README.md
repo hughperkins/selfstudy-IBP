@@ -1,6 +1,16 @@
 # selfstudy-IBP
-Self-study notes for Indian Buffet Process, from reading through "The Indian Buffet Process: An Introduction and Review", Griffiths, Ghahramani, 2011
 
+These notes adapted from:
+
+- ["The Indian Buffet Process: An Introduction and Review"](http://jmlr.org/papers/volume12/griffiths11a/griffiths11a.pdf), Griffiths, Ghahramani, 2011
+- ["Introduction to the Dirichlet Distribution and Related Processes"](http://mayagupta.org/publications/FrigyikKapilaGuptaIntroToDirichlet.pdf), Frigyik, Kapila, Gupta
+- ["Advanced Data Analysis from an Elementary Point of View"](http://www.stat.cmu.edu/~cshalizi/ADAfaEPoV/), Cosma Rohilla Shalizi, chapter 19, "Mixture Models"
+- ["Mixture Models and the EM Algorithm"](http://mlg.eng.cam.ac.uk/tutorials/06/cb.pdf), slide presentation by Bishop 2006
+- ["Accelerated Sampling for the Indian Buffet Process"](http://mlg.eng.cam.ac.uk/pub/pdf/DosGha09.pdf), Doshi-Velez and Ghahramani
+
+The tutorial by Griffiths and Gahramani above was my primary resouce.  Then, in order to understand it, I needed to reach out to the other resources above :-)
+
+Generally speaking, these notes assume that you are reading the appropriate tutorial/paper/slides in parallel with these notes.
 How this is organized currently:
 
 The following sections go through Griffiths and Ghahramani tutorial, in sequence.  Occasionally, I found I needed
