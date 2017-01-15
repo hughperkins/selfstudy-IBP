@@ -94,12 +94,13 @@ def print_images(filepath, image_infos, image_min=-1, image_max=2):
             if 'data' not in image_info:
                 continue
             image = image_info['data']
-            image_size = image.shape[0]
+            image_rows = image.shape[0]
+            image_cols = image.shape[1]
             image_range = image_max - image_min
             image = np.maximum(image_min, image)
             image = np.minimum(image_max, image)
             image = (image - image_min) / image_range
-            image_rgb = np.zeros((image_size, image_size, 3), dtype=np.float32)
+            image_rgb = np.zeros((image_rows, image_cols, 3), dtype=np.float32)
             image_rgb[:, :, 0] = image
             image_rgb[:, :, 1] = image
             image_rgb[:, :, 2] = image
@@ -139,6 +140,7 @@ def draw_samples(N, class_pics):
         images_to_print.append(images_row)
 
     print_images(join(out_dir, 'samples.png'), images_to_print)
+    print_images(join(out_dir, 'samples_Z.png'), {'data': 1 - ground_truth_Z}, image_min=0, image_max=1)
     return samples, ground_truth_Z
 
 
