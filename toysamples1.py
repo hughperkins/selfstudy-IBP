@@ -182,7 +182,15 @@ def print_A(img_path, Z, sigma_X, sigma_A):
     ZTZI = Z.T.dot(Z) + I
     ZTX = Z.T.dot(X)
 
+    # print('ZTX\n', ZTX)
     E_A = np.linalg.solve(ZTZI, ZTX)
+
+    # just for debugging:
+    ZTZIinvZT = np.linalg.inv(ZTZI).dot(Z.T)
+    # print('ZTZIinvZT', ZTZIinvZT)
+    print_images(
+        img_path + '_ZTZIinvZT.png', {'data': ZTZIinvZT.T},
+        image_min=np.min(ZTZIinvZT), image_max=np.max(ZTZIinvZT))
 
     image_infos = []
     for k in range(E_A.shape[0]):
@@ -240,7 +248,7 @@ if __name__ == '__main__':
                     # zik = 0 and zik = 1
                     p_zik_given_Zminus = np.zeros((2,), dtype=np.float32)
                     p_zik_given_Zminus[1] = m_minusi_k / N
-                    p_zik_given_Zminus[0] = 1.0 - p_zik_given_Zminus[1]
+                    p_zik_given_Zminus[0] = 1.0 - m_minusi_k / N
 
                     # and we need also to get the probability from the gaussian, again
                     # for zik=0 and zik=1
@@ -251,7 +259,6 @@ if __name__ == '__main__':
                     log_p_X_given_Z = np.zeros((2,), dtype=np.float32)
                     for zik in [0, 1]:
                         Z_columns[k][n] = zik
-                        # add epsilon to it, to avoid nans
                         log_p_X_given_Z[zik] = calc_log_p_X_given_Z(Z_columns, X, sigma_X, sigma_A)
     #                 print('log_p_X_given_Z', log_p_X_given_Z)
                     log_p_X_given_Z -= np.min(log_p_X_given_Z)
