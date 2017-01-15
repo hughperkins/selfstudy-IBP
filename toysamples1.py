@@ -174,7 +174,7 @@ def calc_log_p_X_given_Z(Z_columns, X, sigma_X, sigma_A):
 #     return gaussian_unnorm
 
 
-def calc_A(img_path, Z_columns, sigma_X, sigma_A):
+def print_A(img_path, Z_columns, sigma_X, sigma_A):
     Z = columns_to_array(Z_columns)
     if Z is None:
         return None
@@ -294,6 +294,6 @@ if __name__ == '__main__':
             it_str = str(it + 1)
             while len(it_str) < 3:
                 it_str = '0' + it_str
-            expected_A = calc_A(join(out_dir, 'A_draws_it%s.png' % it_str), Z_columns, sigma_X, sigma_A)
+            print_A(join(out_dir, 'A_draws_it%s.png' % it_str), Z_columns, sigma_X, sigma_A)
     #         print('expected_A\n', expected_A)
     #     print('Z_columns', Z_columns)
