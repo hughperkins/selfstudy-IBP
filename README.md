@@ -20,8 +20,3 @@ Some notebooks are apart from the above sections, since they use a ton of browse
 I also separated out my reading through Doshi-Velez's "accelerated sampling" paper, because it was also using a lot of browser memory.  Actually, this will probably be moved to a separate repo at some point, probably.
 
 - [accelerated_gibbs_sampling.ipynb](accelerated_gibbs_sampling.ipynb) (This is in-progress, for now)
-
-## news
-
-- 2015 jan 11: just discovered that when the notebooks are displayed in the github viewer, any consecutive equations are displayed showing only the last equation
-  - a temporary workaround for this is to put `&nbsp;` between the equations, which is a bit ugly, but better than skipping equations
