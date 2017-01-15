@@ -13,7 +13,7 @@ N = 100
 # num_samples_to_print = 7
 sigma_X = 0.01
 sigma_A = 1.0
-alpha = 1.0
+alpha = 0.1
 num_its = 1000
 print_every = 10
 
