@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import random
 import os
 from os import path
+from os.path import join
 
 
 num_classes = 4
@@ -12,6 +13,10 @@ num_samples_to_print = 7
 sigma_X = 0.01
 sigma_A = 1.0
 alpha = 1.0
+num_its = 1000
+print_every = 1
+
+out_dir = '/tmp/toysamples1'
 
 
 class_descriptions = [
@@ -144,7 +149,7 @@ def draw_samples(N, class_pics):
 
         samples.append(image)
 
-    print_images('img/toysamples1/samples.png', images_to_print)
+    print_images(join(out_dir, 'samples.png'), images_to_print)
     return samples, ground_truth_Z
 
 
@@ -182,6 +187,8 @@ def calc_log_p_X_given_Z(Z_columns, X, sigma_X, sigma_A):
 
 def calc_A(img_path, Z_columns, sigma_X, sigma_A):
     Z = columns_to_array(Z_columns)
+    if Z is None:
+        return None
     I = sigma_X * sigma_X / (sigma_A * sigma_A) * np.identity(Z.shape[1])
     ZTZI = Z.T.dot(Z) + I
 #     print('ZTZI', ZTZI)
@@ -190,16 +197,19 @@ def calc_A(img_path, Z_columns, sigma_X, sigma_A):
     E_A = ZTZIInv.dot(Z.T).dot(X)
 #     print('E_A\n', E_A)
 #     print('E_A.shape', E_A.shape)
-    image_titles = []
-    images = []
+    # image_titles = []
+    image_infos = []
     for k in range(E_A.shape[0]):
         image_flat = E_A[k]
         image = image_flat.reshape(image_size, image_size)
-        image_titles.append(None)
-        images.append(image)
+        # image_titles.append(None)
+        image_infos.append({
+            'data': image
+        })
+        # images.append(image)
 #         print_images(['A k=%s' % k], [image])
 #     asdf
-    print_images(img_path, image_titles, images, img_path)
+    print_images(img_path, image_infos)
     return E_A
 
 
@@ -213,8 +223,8 @@ def samples_to_X(samples):
 
 
 if __name__ == '__main__':
-    if not path.isdir('img/toysamples1'):
-        os.makedirs('img/toysamples1')
+    if not path.isdir(out_dir):
+        os.makedirs(out_dir)
 
     class_pics = class_descriptions_to_class_pics()
 
@@ -230,7 +240,9 @@ if __name__ == '__main__':
     X = samples_to_X(samples)
     print('X.shape', X.shape)
     np.set_printoptions(suppress=False, precision=3)
-    num_its = 100
+    for filename in os.listdir(out_dir):
+        if filename.startswith('A_draws_it') and filename.endswith('.png'):
+            os.unlink(join(out_dir, filename))
     for it in range(num_its):
         num_added = 0
         num_removed = 0
@@ -295,9 +307,12 @@ if __name__ == '__main__':
                 Z_columns.append(new_col)
                 num_added += 1
 
-        if (it + 1) % (num_its // 10) == 0:
+        if (it + 1) % print_every == 0:
             print('it %s' % (it + 1))
     #         print(columns_to_array(Z_columns))
-            expected_A = calc_A(Z_columns, sigma_X, sigma_A)
+            it_str = str(it + 1)
+            while len(it_str) < 3:
+                it_str = '0' + it_str
+            expected_A = calc_A(join(out_dir, 'A_draws_it%s.png' % it_str), Z_columns, sigma_X, sigma_A)
     #         print('expected_A\n', expected_A)
     #     print('Z_columns', Z_columns)
