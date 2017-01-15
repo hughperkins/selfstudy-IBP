@@ -81,6 +81,7 @@ def print_images(filepath, image_infos, image_min=-1, image_max=2):
     - title (string)
     - data (np.array)
     """
+    plt.clf()
     plt.figure(1)
     if not isinstance(image_infos, list):
         image_infos = [image_infos]
@@ -176,11 +177,7 @@ def calc_log_p_X_given_Z(Z_columns, X, sigma_X, sigma_A):
 #     return gaussian_unnorm
 
 
-def print_A(img_path, Z_columns, sigma_X, sigma_A):
-    Z = columns_to_array(Z_columns)
-    if Z is None:
-        return None
-
+def print_A(img_path, Z, sigma_X, sigma_A):
     I = sigma_X * sigma_X / (sigma_A * sigma_A) * np.identity(Z.shape[1])
     ZTZI = Z.T.dot(Z) + I
     ZTX = Z.T.dot(X)
@@ -226,6 +223,7 @@ if __name__ == '__main__':
     for filename in os.listdir(out_dir):
         if filename.startswith('A_draws_it') and filename.endswith('.png'):
             os.unlink(join(out_dir, filename))
+    print_A(join(out_dir, 'A_from_ground_truth_Z.png'), ground_truth_Z, sigma_X, sigma_A)
     for it in range(num_its):
         num_added = 0
         num_removed = 0
@@ -295,4 +293,6 @@ if __name__ == '__main__':
             it_str = str(it + 1)
             while len(it_str) < 3:
                 it_str = '0' + it_str
-            print_A(join(out_dir, 'A_draws_it%s.png' % it_str), Z_columns, sigma_X, sigma_A)
+            Z = columns_to_array(Z_columns)
+            if Z is not None:
+                print_A(join(out_dir, 'A_draws_it%s.png' % it_str), Z, sigma_X, sigma_A)
