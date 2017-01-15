@@ -156,9 +156,8 @@ def columns_to_array(columns):
     return array
 
 
-def calc_log_p_X_given_Z(Z_columns, X, sigma_X, sigma_A):
-    Z = columns_to_array(Z_columns)
-#     print('Z', Z)
+def calc_log_p_X_given_Z(Z, X, sigma_X, sigma_A):
+    #     print('Z', Z)
     ZTZI = Z.T.dot(Z) + (sigma_X * sigma_X / sigma_A / sigma_A) * np.identity(Z.shape[1])
 #     print('ZTZI', ZTZI)
     ZTZIInv = np.linalg.inv(ZTZI)
@@ -191,6 +190,9 @@ def print_A(img_path, Z, sigma_X, sigma_A):
     print_images(
         img_path + '_ZTZIinvZT.png', {'data': ZTZIinvZT.T},
         image_min=np.min(ZTZIinvZT), image_max=np.max(ZTZIinvZT))
+
+    print_images(
+        img_path + '_Z.png', {'data': Z})
 
     image_infos = []
     for k in range(E_A.shape[0]):
@@ -232,6 +234,7 @@ if __name__ == '__main__':
         if filename.startswith('A_draws_it') and filename.endswith('.png'):
             os.unlink(join(out_dir, filename))
     print_A(join(out_dir, 'A_from_ground_truth_Z.png'), ground_truth_Z, sigma_X, sigma_A)
+    sigma_X = 1
     for it in range(num_its):
         num_added = 0
         num_removed = 0
@@ -259,12 +262,14 @@ if __name__ == '__main__':
                     log_p_X_given_Z = np.zeros((2,), dtype=np.float32)
                     for zik in [0, 1]:
                         Z_columns[k][n] = zik
-                        log_p_X_given_Z[zik] = calc_log_p_X_given_Z(Z_columns, X, sigma_X, sigma_A)
+                        log_p_X_given_Z[zik] = calc_log_p_X_given_Z(
+                            columns_to_array(Z_columns), X, sigma_X, sigma_A)
     #                 print('log_p_X_given_Z', log_p_X_given_Z)
                     log_p_X_given_Z -= np.min(log_p_X_given_Z)
     #                 print('log_p_X_given_Z norm', log_p_X_given_Z)
+                    # print('log_p_X_given_Z', log_p_X_given_Z)
                     p_X_given_Z = np.exp(log_p_X_given_Z)
-    #                 print('p_X_given_Z', p_X_given_Z)
+                    # print('p_X_given_Z', p_X_given_Z)
 
     #                 print('p_zik_given_Zminus', p_zik_given_Zminus)
     #                 print('p_X_given_Z\n', p_X_given_Z)
