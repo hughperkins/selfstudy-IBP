@@ -255,6 +255,8 @@ if __name__ == '__main__':
 
                     # if probability of 1 from ibp prior is zero, just choose
                     # 0 directly
+                    # oh, in hindsight, m_minusi_k is always at least 1 anyway, otherwise
+                    # we'd have alreayd deleted this column ~8 lines ago
                     if p_zik_given_Zminus[1] == 0:
                         new_zik = 0
                     else:
