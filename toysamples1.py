@@ -234,7 +234,7 @@ if __name__ == '__main__':
         if filename.startswith('A_draws_it') and filename.endswith('.png'):
             os.unlink(join(out_dir, filename))
     print_A(join(out_dir, 'A_from_ground_truth_Z.png'), ground_truth_Z, sigma_X, sigma_A)
-    sigma_X = 1
+    # sigma_X = 1
     for it in range(num_its):
         num_added = 0
         num_removed = 0
@@ -266,22 +266,33 @@ if __name__ == '__main__':
                             columns_to_array(Z_columns), X, sigma_X, sigma_A)
     #                 print('log_p_X_given_Z', log_p_X_given_Z)
                     log_p_X_given_Z -= np.min(log_p_X_given_Z)
-    #                 print('log_p_X_given_Z norm', log_p_X_given_Z)
-                    # print('log_p_X_given_Z', log_p_X_given_Z)
-                    p_X_given_Z = np.exp(log_p_X_given_Z)
-                    # print('p_X_given_Z', p_X_given_Z)
 
-    #                 print('p_zik_given_Zminus', p_zik_given_Zminus)
-    #                 print('p_X_given_Z\n', p_X_given_Z)
-                    p_zik_given_X_Z_unnorm = np.multiply(
-                        p_zik_given_Zminus, p_X_given_Z)
-                    p_zik_given_X_Z = p_zik_given_X_Z_unnorm / np.sum(p_zik_given_X_Z_unnorm)
-    #                 print('p_zik_given_X_Z', p_zik_given_X_Z)
+                    # if either of the log probs are more than 12, then its
+                    # basically infinitely likely we'll choose that one, so we
+                    # just choose it directly
+                    if np.max(log_p_X_given_Z) > 12:
+                        if log_p_X_given_Z[0] > 10:
+                            new_zik = 0
+                        else:
+                            new_zik = 1
+                    else:
+                        # print('log_p_X_given_Z norm', log_p_X_given_Z)
+                        # print('log_p_X_given_Z', log_p_X_given_Z)
+                        p_X_given_Z = np.exp(log_p_X_given_Z)
+                        # print('p_X_given_Z', p_X_given_Z)
 
-                    prob_zik_one = p_zik_given_X_Z[1]
+        #                 print('p_zik_given_Zminus', p_zik_given_Zminus)
+        #                 print('p_X_given_Z\n', p_X_given_Z)
+                        p_zik_given_X_Z_unnorm = np.multiply(
+                            p_zik_given_Zminus, p_X_given_Z)
+                        p_zik_given_X_Z = p_zik_given_X_Z_unnorm / np.sum(p_zik_given_X_Z_unnorm)
+        #                 print('p_zik_given_X_Z', p_zik_given_X_Z)
 
-                    p = random.uniform(0, 1)
-                    new_zik = 1 if p <= prob_zik_one else 0
+                        prob_zik_one = p_zik_given_X_Z[1]
+
+                        p = random.uniform(0, 1)
+                        new_zik = 1 if p <= prob_zik_one else 0
+
                     Z_columns[k][n] = new_zik
                     M[k] += new_zik - old_zik
                 else:
