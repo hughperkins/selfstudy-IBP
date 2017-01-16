@@ -253,46 +253,39 @@ if __name__ == '__main__':
                     p_zik_given_Zminus[1] = m_minusi_k / N
                     p_zik_given_Zminus[0] = 1.0 - m_minusi_k / N
 
-                    # if probability of 1 from ibp prior is zero, just choose
-                    # 0 directly
-                    # oh, in hindsight, m_minusi_k is always at least 1 anyway, otherwise
-                    # we'd have alreayd deleted this column ~8 lines ago
-                    if p_zik_given_Zminus[1] == 0:
-                        new_zik = 0
-                    else:
-                        # otherwise, we need also to get the probability from the gaussian, again
-                        # for zik=0 and zik=1
-                        # for now, lets just stupidly calculate it, not do rank-1s or anything
+                    # we need also to get the probability from the gaussian, again
+                    # for zik=0 and zik=1
+                    # for now, lets just stupidly calculate it, not do rank-1s or anything
 
-                        # calculate as log first, then normalize this first, then
-                        # exp it, to avoid crazily tiny values etc
-                        log_p_X_given_Z = np.zeros((2,), dtype=np.float32)
-                        for zik in [0, 1]:
-                            Z_columns[k][n] = zik
-                            log_p_X_given_Z[zik] = calc_log_p_X_given_Z(
-                                columns_to_array(Z_columns), X, sigma_X, sigma_A)
-        #                 print('log_p_X_given_Z', log_p_X_given_Z)
-                        log_p_X_given_Z -= np.min(log_p_X_given_Z)
+                    # calculate as log first, then normalize this first, then
+                    # exp it, to avoid crazily tiny values etc
+                    log_p_X_given_Z = np.zeros((2,), dtype=np.float32)
+                    for zik in [0, 1]:
+                        Z_columns[k][n] = zik
+                        log_p_X_given_Z[zik] = calc_log_p_X_given_Z(
+                            columns_to_array(Z_columns), X, sigma_X, sigma_A)
+    #                 print('log_p_X_given_Z', log_p_X_given_Z)
+                    log_p_X_given_Z -= np.min(log_p_X_given_Z)
 
-                        # if either of the log probs are more than 12, then its
-                        # basically infinitely likely we'll choose that one, so we
-                        # just choose it directly
-                        if np.max(log_p_X_given_Z) > 12:
-                            if log_p_X_given_Z[1] > log_p_X_given_Z[0]:
-                                new_zik = 1
-                            else:
-                                new_zik = 0
+                    # if either of the log probs are more than 12, then its
+                    # basically infinitely likely we'll choose that one, so we
+                    # just choose it directly
+                    if np.max(log_p_X_given_Z) > 12:
+                        if log_p_X_given_Z[1] > log_p_X_given_Z[0]:
+                            new_zik = 1
                         else:
-                            p_X_given_Z = np.exp(log_p_X_given_Z)
+                            new_zik = 0
+                    else:
+                        p_X_given_Z = np.exp(log_p_X_given_Z)
 
-                            p_zik_given_X_Z_unnorm = np.multiply(
-                                p_zik_given_Zminus, p_X_given_Z)
-                            p_zik_given_X_Z = p_zik_given_X_Z_unnorm / np.sum(p_zik_given_X_Z_unnorm)
+                        p_zik_given_X_Z_unnorm = np.multiply(
+                            p_zik_given_Zminus, p_X_given_Z)
+                        p_zik_given_X_Z = p_zik_given_X_Z_unnorm / np.sum(p_zik_given_X_Z_unnorm)
 
-                            prob_zik_one = p_zik_given_X_Z[1]
+                        prob_zik_one = p_zik_given_X_Z[1]
 
-                            p = random.uniform(0, 1)
-                            new_zik = 1 if p <= prob_zik_one else 0
+                        p = random.uniform(0, 1)
+                        new_zik = 1 if p <= prob_zik_one else 0
 
                     Z_columns[k][n] = new_zik
                     M[k] += new_zik - old_zik
