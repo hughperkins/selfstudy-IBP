@@ -1,3 +1,4 @@
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import random
@@ -6,19 +7,6 @@ import scipy.stats
 import math
 from os import path
 from os.path import join
-
-
-num_classes = 4
-image_size = 6
-N = 100
-# num_samples_to_print = 7
-sigma_X = 0.5
-sigma_A = 1.0
-alpha = 0.07
-num_its = 1000
-print_every = 1
-
-out_dir = '/tmp/toysamples1'
 
 
 class_descriptions = [
@@ -61,7 +49,7 @@ class_descriptions = [
 ]
 
 
-def class_descriptions_to_class_pics():
+def class_descriptions_to_class_pics(num_classes, image_size):
     class_pics = []
     for i, desc in enumerate(class_descriptions):
         if i >= num_classes:
@@ -114,7 +102,7 @@ def print_images(filepath, image_infos, image_min=-1, image_max=2):
     plt.savefig(filepath)
 
 
-def draw_samples(N, class_pics):
+def draw_samples(out_dir, image_size, num_classes, sigma_X, N, class_pics):
     samples = []
     ground_truth_Z = np.zeros((N, num_classes), dtype=np.int8)
     images_to_print = []
@@ -177,7 +165,7 @@ def calc_log_p_X_given_Z(Z, X, sigma_X, sigma_A):
 #     return gaussian_unnorm
 
 
-def print_A(img_path, Z, sigma_X, sigma_A):
+def print_A(img_path, image_size, sigma_X, sigma_A, X, Z):
     I = sigma_X * sigma_X / (sigma_A * sigma_A) * np.identity(Z.shape[1])
     ZTZI = Z.T.dot(Z) + I
     ZTX = Z.T.dot(X)
@@ -213,18 +201,23 @@ def samples_to_X(samples):
     return X
 
 
-if __name__ == '__main__':
+def run(
+        print_every, num_its, N, num_classes, image_size, alpha, sigma_X, sigma_A, out_dir,
+        new_features_ignore_posterior=False):
     if not path.isdir(out_dir):
         os.makedirs(out_dir)
 
-    class_pics = class_descriptions_to_class_pics()
+    class_pics = class_descriptions_to_class_pics(
+        num_classes=num_classes, image_size=image_size)
 
-    samples, ground_truth_Z = draw_samples(N, class_pics)
+    samples, ground_truth_Z = draw_samples(
+        out_dir=out_dir, image_size=image_size, num_classes=num_classes,
+        sigma_X=sigma_X, N=N, class_pics=class_pics)
 
     Z_columns = []
     column = np.random.choice(2, (N,))
     Z_columns.append(column)
-    K_plus = len(Z_columns)
+    # K_plus = len(Z_columns)
     M = []
     M.append(np.sum(Z_columns[0]))
 
@@ -234,7 +227,9 @@ if __name__ == '__main__':
     for filename in os.listdir(out_dir):
         if filename.startswith('A_draws_it') and filename.endswith('.png'):
             os.unlink(join(out_dir, filename))
-    print_A(join(out_dir, 'A_from_ground_truth_Z.png'), ground_truth_Z, sigma_X, sigma_A)
+    print_A(
+        img_path=join(out_dir, 'A_from_ground_truth_Z.png'), image_size=image_size,
+        X=X, Z=ground_truth_Z, sigma_X=sigma_X, sigma_A=sigma_A)
     # sigma_X = 1
     for it in range(num_its):
         num_added = 0
@@ -306,15 +301,18 @@ if __name__ == '__main__':
             Z = columns_to_array(Z_columns)
             for k1 in range(k1_range):
                 log_prior_p = scipy.stats.poisson.logpmf(k1, alpha / N)
-                if k1 == 0:
-                    Z_k1 = Z
+                if new_features_ignore_posterior:
+                    log_p_next[k1] = log_prior_p
                 else:
-                    Z_k1 = np.zeros((N, Z.shape[1] + k1), dtype=np.float32)
-                    Z_k1[:, :Z.shape[1]] = Z
-                    Z_k1[n, Z.shape[1]:].fill(1)
-                log_posterior = calc_log_p_X_given_Z(
-                    Z_k1, X, sigma_X, sigma_A)
-                log_p_next[k1] = log_prior_p + log_posterior
+                    if k1 == 0:
+                        Z_k1 = Z
+                    else:
+                        Z_k1 = np.zeros((N, Z.shape[1] + k1), dtype=np.float32)
+                        Z_k1[:, :Z.shape[1]] = Z
+                        Z_k1[n, Z.shape[1]:].fill(1)
+                    log_posterior = calc_log_p_X_given_Z(
+                        Z_k1, X, sigma_X, sigma_A)
+                    log_p_next[k1] = log_prior_p + log_posterior
             log_p_next -= np.max(log_p_next)
             p_next = np.exp(log_p_next)
             p_next /= np.sum(p_next)
@@ -333,4 +331,26 @@ if __name__ == '__main__':
                 it_str = '0' + it_str
             Z = columns_to_array(Z_columns)
             if Z is not None:
-                print_A(join(out_dir, 'A_draws_it%s.png' % it_str), Z, sigma_X, sigma_A)
+                print_A(
+                    img_path=join(out_dir, 'A_draws_it%s.png' % it_str), X=X, Z=Z,
+                    sigma_X=sigma_X, sigma_A=sigma_A, image_size=image_size)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--num-classes', type=int, default=4)
+    parser.add_argument('--image-size', type=int, default=6)
+    parser.add_argument('--N', type=int, default=100)
+    # num_samples_to_print = 7
+    parser.add_argument('--sigma-X', type=float, default=0.5)
+    parser.add_argument('--sigma-A', type=float, default=1.0)
+    parser.add_argument('--alpha', type=float, default=0.07)
+    parser.add_argument('--num-its', type=int, default=1000)
+    parser.add_argument('--print-every', type=int, default=1)
+    parser.add_argument('--out-dir', type=str, default='/tmp/toysamples1')
+    parser.add_argument(
+        '--new-features-ignore-posterior', action='store_true',
+        help='if true, number of new features comes just from Poisson prior, not from '
+             'checking also posterior probability based on X')
+    args = parser.parse_args()
+    run(**args.__dict__)
