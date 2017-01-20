@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 import os
+import scipy.stats
 import math
 from os import path
 from os.path import join
@@ -11,11 +12,11 @@ num_classes = 4
 image_size = 6
 N = 100
 # num_samples_to_print = 7
-sigma_X = 0.01
+sigma_X = 0.5
 sigma_A = 1.0
-alpha = 0.1
+alpha = 0.07
 num_its = 1000
-print_every = 10
+print_every = 1
 
 out_dir = '/tmp/toysamples1'
 
@@ -297,7 +298,27 @@ if __name__ == '__main__':
 
                 k += 1
             # add new features
-            num_new_features = np.random.poisson(alpha / N)
+            k1_range = 3
+            # we calculate the posterior probability for each possible
+            # number of new features, for a smallish range, up to
+            # some reasonable upperbound, here 2
+            log_p_next = np.zeros((k1_range,), dtype=np.float32)
+            Z = columns_to_array(Z_columns)
+            for k1 in range(k1_range):
+                log_prior_p = scipy.stats.poisson.logpmf(k1, alpha / N)
+                if k1 == 0:
+                    Z_k1 = Z
+                else:
+                    Z_k1 = np.zeros((N, Z.shape[1] + k1), dtype=np.float32)
+                    Z_k1[:, :Z.shape[1]] = Z
+                    Z_k1[n, Z.shape[1]:].fill(1)
+                log_posterior = calc_log_p_X_given_Z(
+                    Z_k1, X, sigma_X, sigma_A)
+                log_p_next[k1] = log_prior_p + log_posterior
+            log_p_next -= np.max(log_p_next)
+            p_next = np.exp(log_p_next)
+            p_next /= np.sum(p_next)
+            num_new_features = np.random.choice(a=k1_range, p=p_next)
             for j in range(num_new_features):
                 M.append(1)
                 new_col = np.zeros((N,), dtype=np.float32)
