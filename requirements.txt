@@ -1,0 +1,5 @@
+matplotlib>=2.0.0.1
+numpy>=1.12.0
+scipy>=0.18.1
+jupyter>=1.0.0
+ipython>=5.1.0

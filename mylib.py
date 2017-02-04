@@ -41,7 +41,7 @@ def get_ticks(lim, spacing):
     return ticks
 
 
-def proportional_axes(xlim, ylim, size=6):
+def proportional_axes(xlim, ylim, size=10):
     x_range = xlim[1] - xlim[0]
     y_range = ylim[1] - ylim[0]
     max_range = max(x_range, y_range)
@@ -53,6 +53,16 @@ def proportional_axes(xlim, ylim, size=6):
     plt.ylim(ylim[0], ylim[1])
     plt.xticks(xticks)
     plt.yticks(yticks)
+
+
+def proj_ortho_basis(v, b0, b1):
+    v = v.reshape(-1)
+    b0 = b0.reshape(-1)
+    b1 = b1.reshape(-1)
+    x = v.dot(b0)
+    y = v.dot(b1)
+    proj = np.array([x, y], dtype=np.float32)
+    return proj
 
 
 # def plot_vector(start, end, formatstr=None, **kwargs):
