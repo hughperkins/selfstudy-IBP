@@ -53,4 +53,4 @@ def proj_orthonorm(v, B):
     # print('B.dot(v)', B.dot(v))
     # print('v.dot(B)', v.dot(B))
     # return proj
-    return v.dot(B)
+    return B.T.dot(v)
