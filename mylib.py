@@ -25,12 +25,14 @@ def plot_vector(p2, formatstr=None, p1=zerov, **kwargs):
 def get_tick_spacing(max_range):
     power10 = int(math.log(max_range) / math.log(10))
     scaled_max_range = max_range * math.pow(10, power10)
+    print('scaled_max_range', scaled_max_range)
     if scaled_max_range < 2.5:
         spacing = math.pow(10, power10) * 0.5
     elif scaled_max_range < 5:
         spacing = math.pow(10, power10)
     else:
-        spacing = math.pow(10, power10) * 5
+        # spacing = math.pow(10, power10) * 5
+        spacing = math.pow(10, power10)
     return spacing
 
 

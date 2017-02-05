@@ -2,8 +2,8 @@
 Methods to facilitate working with bases, projections etc
 
 Note: it looks like this is not needed at all:
-- QR decomposition gives us the basis
-- matrix multiplication with the basis gives us the projection into that basis
+- QR decomposition gives us the basis, as Q
+- matrix multiplication with Q.T gives us the projection into that basis
 """
 import numpy as np
 
