@@ -10,6 +10,8 @@ def plot_vector(p2, formatstr=None, p1=zerov, **kwargs):
     # if p1 is None:
     #     # p2 = p1
     #     p1 = zerov
+    p2 = p2.reshape(-1)
+    p1 = p1.reshape(-1)
     line = np.zeros((2, 2))
     line[0] = p1
     line[1] = p2
@@ -29,7 +31,7 @@ def get_tick_spacing(max_range):
     if scaled_max_range < 2.5:
         spacing = math.pow(10, power10) * 0.5
     elif scaled_max_range < 5:
-        spacing = math.pow(10, power10)
+        spacing = math.pow(10, power10) * 0.5
     else:
         # spacing = math.pow(10, power10) * 5
         spacing = math.pow(10, power10)
